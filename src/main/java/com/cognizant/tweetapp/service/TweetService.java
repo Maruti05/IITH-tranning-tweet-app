@@ -1,6 +1,7 @@
 package com.cognizant.tweetapp.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.cognizant.tweetapp.entity.Tweet;
 import com.cognizant.tweetapp.entity.User;
@@ -22,6 +23,8 @@ public interface TweetService {
 
 	List<Tweet> viewAllTweets(User loggedUser);
 
-	List<User> viewAllTweets();
+	List<User> viewAllTweetsOfUsers();
+
+	Optional<Tweet> viewMyTweet(User loggedUser, int id);
 
 }

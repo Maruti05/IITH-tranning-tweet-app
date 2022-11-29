@@ -1,6 +1,7 @@
 package com.cognizant.tweetapp.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.cognizant.tweetapp.dao.TweetDao;
 import com.cognizant.tweetapp.dao.impl.TweetDaoImpl;
@@ -51,8 +52,14 @@ public class TweetServiceImpl implements TweetService{
 	}
 
 	@Override
-	public List<User> viewAllTweets() {
-		return dao.viewAllTweets();
+	public List<User> viewAllTweetsOfUsers() {
+		return dao.viewAllTweetsOfUsers();
+	}
+
+	@Override
+	public Optional<Tweet> viewMyTweet(User loggedUser, int id) {
+		
+		return dao.viewMyTweet(loggedUser, id);
 	}
 
 }

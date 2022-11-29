@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.cognizant.tweetapp.dao.TweetDao;
 import com.cognizant.tweetapp.entity.Tweet;
@@ -164,7 +165,7 @@ public class TweetDaoImpl implements TweetDao{
 	public List<Tweet> viewAllTweets(User loggedUser) {
 		List<Tweet> tweets=new ArrayList<Tweet>();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		String sql = new StringBuilder().append("select message,posted_at from user u inner join tweet t on u.id=t.user_id where email=?").toString();
+		String sql = new StringBuilder().append("select tweet_id,message,posted_at from user u inner join tweet t on u.id=t.user_id where email=?").toString();
 		try(Connection connection=DriverManager.getConnection(Constants.url, Constants.username, Constants.password);
 				PreparedStatement pt=connection.prepareStatement(sql);
 		) {
@@ -173,7 +174,7 @@ public class TweetDaoImpl implements TweetDao{
 			Tweet t=null;
 	          while (rs.next()) {
 	        	  t=new Tweet();
-	        	
+	        	  t.setId(rs.getLong("tweet_id"));
 	        	  t.setMessage(rs.getString("message"));
 	        	  t.setPostedAt(LocalDateTime.parse(rs.getString("posted_at"),formatter));
 				tweets.add(t);
@@ -185,7 +186,7 @@ public class TweetDaoImpl implements TweetDao{
 	}
 
 	@Override
-	public List<User> viewAllTweets() {
+	public List<User> viewAllTweetsOfUsers() {
 		List<User> users=new ArrayList<User>();
 		String sql = new StringBuilder().append("select * from user").toString();
 		try(Connection connection=DriverManager.getConnection(Constants.url, Constants.username, Constants.password);
@@ -205,5 +206,13 @@ public class TweetDaoImpl implements TweetDao{
 			System.out.println(e.getMessage());
 		}
 		return users;
+	}
+
+	@Override
+	public Optional<Tweet> viewMyTweet(User loggedUser, int id) {
+		List<Tweet> allTweets = viewAllTweets(loggedUser);
+		return allTweets.stream()
+				.filter(tw->tw.getId()==id)
+				.findFirst();
 	}
 }
